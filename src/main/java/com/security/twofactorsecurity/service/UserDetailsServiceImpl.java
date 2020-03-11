@@ -28,14 +28,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         Optional<User> userOptional = userDao.findByUsername(s);
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        Set<String> grantedAuthoritiesString = user.getRoles().stream()
-                .map(SimpleGrantedAuthority::new)
-                .map(SimpleGrantedAuthority::toString)
-                .collect(Collectors.toSet());
         return UserBuilder.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .roles(grantedAuthoritiesString)
+                .roles(user.getRoles())
                 .build();
     }
 }

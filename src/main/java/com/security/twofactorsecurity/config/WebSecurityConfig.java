@@ -1,5 +1,6 @@
 package com.security.twofactorsecurity.config;
 
+import com.security.twofactorsecurity.enums.Role;
 import com.security.twofactorsecurity.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/secured").authenticated()
+                .antMatchers("/secured").hasRole("USER")
                 .and()
                 .formLogin().permitAll();
     }

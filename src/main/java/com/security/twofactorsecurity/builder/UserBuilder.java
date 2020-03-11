@@ -1,5 +1,6 @@
 package com.security.twofactorsecurity.builder;
 
+import com.security.twofactorsecurity.enums.Role;
 import com.security.twofactorsecurity.model.User;
 
 import java.util.Set;
@@ -22,7 +23,7 @@ public class UserBuilder {
         return this;
     }
 
-    public UserBuilder roles(Set<String> roles){
+    public UserBuilder roles(Set<Role> roles){
         user.setRoles(roles);
         return this;
     }
