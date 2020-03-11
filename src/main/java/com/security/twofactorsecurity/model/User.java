@@ -26,6 +26,8 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
+    private Boolean using2FA;
+
     public User(String username, String password, Set<Role> roles) {
         this.username = username;
         this.password = password;
@@ -57,6 +59,14 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Boolean getUsing2FA() {
+        return using2FA;
+    }
+
+    public void setUsing2FA(Boolean using2FA) {
+        this.using2FA = using2FA;
     }
 
     @Override

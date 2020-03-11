@@ -28,6 +28,11 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder using2FA(Boolean using2FA){
+        user.setUsing2FA(using2FA);
+        return this;
+    }
+
     public User build(){
         return user;
     }

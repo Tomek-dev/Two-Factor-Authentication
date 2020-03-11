@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.Set;
 
 @Component
 public class Start {
@@ -27,7 +28,8 @@ public class Start {
         User user = UserBuilder.builder()
                 .username("user")
                 .password(passwordEncoder.encode("password"))
-                .roles(Collections.singleton(Role.USER))
+                .roles(Set.of(Role.USER))
+                .using2FA(true)
                 .build();
         userDao.save(user);
     }
