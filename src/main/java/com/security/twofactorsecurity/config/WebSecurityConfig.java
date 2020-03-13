@@ -1,7 +1,7 @@
 package com.security.twofactorsecurity.config;
 
 import com.security.twofactorsecurity.service.UserDetailsServiceImpl;
-import com.security.twofactorsecurity.verification.VerificationHandler;
+import com.security.twofactorsecurity.security.VerificationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,8 +1,10 @@
-package com.security.twofactorsecurity.verification;
+package com.security.twofactorsecurity.security;
 
 import com.security.twofactorsecurity.dao.UserDao;
 import com.security.twofactorsecurity.model.User;
+import com.security.twofactorsecurity.service.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -21,12 +23,12 @@ public class VerificationHandler implements AuthenticationSuccessHandler {
     private final String VERIFICATION_URL = "/verify";
     private final String INDEX_URL = "/";
 
-    private VerificationService authenticationService;
+    private VerificationService verificationService;
     private UserDao userDao;
 
     @Autowired
-    public VerificationHandler(VerificationService authenticationService, UserDao userDao) {
-        this.authenticationService = authenticationService;
+    public VerificationHandler(@Qualifier("GoogleAuthenticatorService") VerificationService verificationService, UserDao userDao) {
+        this.verificationService = verificationService;
         this.userDao = userDao;
     }
 
@@ -36,7 +38,7 @@ public class VerificationHandler implements AuthenticationSuccessHandler {
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if(user.getUsing2FA()){
             authentication.setAuthenticated(false);
-            authenticationService.allowVerification(authentication);
+            verificationService.allowVerification(authentication);
             new DefaultRedirectStrategy().sendRedirect(httpServletRequest, httpServletResponse, VERIFICATION_URL);
         }
         else{

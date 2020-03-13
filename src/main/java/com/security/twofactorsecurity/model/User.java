@@ -28,6 +28,9 @@ public class User implements UserDetails {
 
     private Boolean using2FA;
 
+    @OneToOne
+    private SecretCode secretCode;
+
     public User(String username, String password, Set<Role> roles) {
         this.username = username;
         this.password = password;
