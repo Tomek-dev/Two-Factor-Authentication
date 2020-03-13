@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/secured").hasRole("USER")
                 .antMatchers("/verify").hasRole("PRE_VERIFICATION")
+                .antMatchers("/authenticated").authenticated()
                 .and()
                 .formLogin().permitAll()
                 .successHandler(verificationHandler);
