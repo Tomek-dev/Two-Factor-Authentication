@@ -31,11 +31,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/secured").hasRole("USER")
+                .antMatchers("/resources/**").permitAll()
+                .antMatchers("/secured", "/generate").hasRole("USER")
                 .antMatchers("/verify").hasRole("PRE_VERIFICATION")
                 .antMatchers("/authenticated").authenticated()
                 .and()
-                .formLogin().permitAll()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
                 .successHandler(verificationHandler);
     }
 

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <title>Login</title>
+  </head>
+  <body>
+    <form class="login" th:action="@{/login}" method="post">
+      <h1>Login</h1>
+      <div th:if="${param.logout}" class="alert-success">
+          You have been logged out.
+      </div>
+      <input type="text" name="username">
+      <input type="password" name="password">
+      <div th:if="${param.error}" class="alert-error">
+          Invalid username and password.
+      </div>
+      <input type="submit" value="Login">
+    </form>
+  </body>
+</html>

@@ -3,6 +3,7 @@ package com.security.twofactorsecurity.service;
 import com.security.twofactorsecurity.dao.SecretCodeDao;
 import com.security.twofactorsecurity.dao.UserDao;
 import com.security.twofactorsecurity.enums.Role;
+import com.security.twofactorsecurity.exceptions.SecretKeyAlreadyExistException;
 import com.security.twofactorsecurity.exceptions.SecretKeyNotFoundException;
 import com.security.twofactorsecurity.model.SecretCode;
 import com.security.twofactorsecurity.model.User;
@@ -57,9 +58,13 @@ public class GoogleAuthenticatorService implements VerificationService {
     }
 
     @Override
-    public String generateKey(String username) {
+    public String generateKey(String username) throws SecretKeyAlreadyExistException {
         Optional<User> userOptional = userDao.findByUsername(username);
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Optional<SecretCode> secretCodeOptional = secretCodeDao.findByUser(user);
+        if(secretCodeOptional.isPresent()){
+            throw new SecretKeyAlreadyExistException();
+        }
         String secretKey = TOTPCode.generateKey();
         SecretCode secretCode = new SecretCode(secretKey, user); //TODO encrypt secretKey in db
         secretCodeDao.save(secretCode);

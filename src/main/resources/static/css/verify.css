@@ -1,0 +1,43 @@
+body{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+}
+
+.verify{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  min-width: 350px;
+  text-align: center;
+}
+
+.verify h1{
+  margin: 8px;
+}
+
+.verify p{
+  margin: 4px;
+}
+
+.verify input{
+  margin: 8px auto;
+}
+
+.verify input[type="text"]{
+  width: 80%;
+}
+
+.verify input[type="submit"]{
+  width: 20%;
+  padding: 4px 0;
+}
+
+.alert-error{
+  color: #a83232;
+}

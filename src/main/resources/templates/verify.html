@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" th:href="@{/css/verify.css}">
+    <title>Verify</title>
+  </head>
+  <body>
+    <form class="verify" th:action="@{/verify}" method="post">
+      <h1>Verification</h1>
+      <p>Enter 6 digit code</p>
+      <input type="text" name="code" pattern="[0-9]{6}">
+      <div th:if="${param.error}" class="alert-error">
+          Invalid verify code.
+      </div>
+      <input type="submit" name="submit" value="Verify">
+    </form>
+  </body>
+</html>
