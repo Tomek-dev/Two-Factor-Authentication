@@ -1,6 +1,6 @@
 package com.security.twofactorsecurity.exceptions;
 
-public class SecretKeyAlreadyExistException extends Exception{
+public class SecretKeyAlreadyExistException extends RuntimeException{
     public SecretKeyAlreadyExistException() {
         super("Secret key already exist");
     }

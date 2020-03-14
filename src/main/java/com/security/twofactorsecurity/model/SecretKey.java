@@ -3,7 +3,7 @@ package com.security.twofactorsecurity.model;
 import javax.persistence.*;
 
 @Entity
-public class SecretCode {
+public class SecretKey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,10 +14,10 @@ public class SecretCode {
     @OneToOne
     private User user;
 
-    public SecretCode() {
+    public SecretKey() {
     }
 
-    public SecretCode(String code, User user) {
+    public SecretKey(String code, User user) {
         this.code = code;
         this.user = user;
     }

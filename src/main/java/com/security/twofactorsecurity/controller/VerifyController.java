@@ -41,7 +41,8 @@ public class VerifyController {
     @GetMapping("/generate")
     public String generate(Authentication authentication, Model model){
         try {
-            model.addAttribute("code", verificationService.generateKey(authentication.getName()));
+            String code = verificationService.generateKey(authentication.getName());
+            model.addAttribute("code", code);
             return "generate";
         } catch (SecretKeyAlreadyExistException e) {
             return "redirect:/verify";

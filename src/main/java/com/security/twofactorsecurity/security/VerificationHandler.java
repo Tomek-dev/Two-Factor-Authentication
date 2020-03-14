@@ -38,7 +38,6 @@ public class VerificationHandler implements AuthenticationSuccessHandler {
         Optional<User> userOptional = userDao.findByUsername(authentication.getName());
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if(user.getUsing2FA()){
-            authentication.setAuthenticated(false);
             verificationService.allowVerification(authentication);
             new DefaultRedirectStrategy().sendRedirect(httpServletRequest, httpServletResponse, VERIFICATION_URL);
         }

@@ -2,14 +2,12 @@ package com.security.twofactorsecurity.model;
 
 import com.security.twofactorsecurity.enums.Role;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "usermodel")
@@ -28,8 +26,8 @@ public class User implements UserDetails {
 
     private Boolean using2FA;
 
-    @OneToOne
-    private SecretCode secretCode;
+    @OneToOne(mappedBy = "user")
+    private SecretKey secretKey;
 
     public User(String username, String password, Set<Role> roles) {
         this.username = username;
@@ -70,6 +68,14 @@ public class User implements UserDetails {
 
     public void setUsing2FA(Boolean using2FA) {
         this.using2FA = using2FA;
+    }
+
+    public SecretKey getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(SecretKey secretKey) {
+        this.secretKey = secretKey;
     }
 
     @Override
