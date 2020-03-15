@@ -5,6 +5,7 @@ import com.security.twofactorsecurity.dao.SecretKeyDao;
 import com.security.twofactorsecurity.dao.UserDao;
 import com.security.twofactorsecurity.enums.Role;
 import com.security.twofactorsecurity.exceptions.SecretKeyAlreadyExistException;
+import com.security.twofactorsecurity.exceptions.SecretKeyNotFoundException;
 import com.security.twofactorsecurity.model.SecretKey;
 import com.security.twofactorsecurity.model.User;
 import org.junit.Before;
@@ -21,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,6 +57,16 @@ public class GoogleAuthenticatorServiceTest {
         //then
         assertThrows(UsernameNotFoundException.class, () -> authenticatorService.verify(authentication, "4"));
         assertThrows(UsernameNotFoundException.class, () -> authenticatorService.generateKey("username"));
+    }
+
+    @Test(expected = SecretKeyNotFoundException.class)
+    public void shouldThrowSecretKeyNotFoundException(){
+        //given
+        given(userDao.findByUsername(Mockito.any())).willReturn(Optional.of(new User()));
+        given(secretKeyDao.findByUser(Mockito.any())).willReturn(Optional.empty());
+
+        //when
+        authenticatorService.verify(authentication, "code");
     }
 
     @Test(expected = SecretKeyAlreadyExistException.class)
