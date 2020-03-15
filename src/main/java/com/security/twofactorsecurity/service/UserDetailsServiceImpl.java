@@ -28,10 +28,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         Optional<User> userOptional = userDao.findByUsername(s);
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return UserBuilder.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRoles())
-                .build();
+        return user;
     }
 }
