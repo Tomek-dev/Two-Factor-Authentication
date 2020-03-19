@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Optional;
 
 @Component
@@ -38,7 +39,8 @@ public class VerificationHandler implements AuthenticationSuccessHandler {
         Optional<User> userOptional = userDao.findByUsername(authentication.getName());
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if(user.getUsing2FA()){
-            verificationService.allowVerification(authentication);
+            String token = verificationService.allowVerification(authentication);
+            httpServletResponse.addHeader("Authorization", token);
             new DefaultRedirectStrategy().sendRedirect(httpServletRequest, httpServletResponse, VERIFICATION_URL);
         }
         else{

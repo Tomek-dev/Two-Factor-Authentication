@@ -8,6 +8,8 @@ import com.security.twofactorsecurity.exceptions.SecretKeyNotFoundException;
 import com.security.twofactorsecurity.model.SecretKey;
 import com.security.twofactorsecurity.model.User;
 import com.security.twofactorsecurity.other.TOTPCode;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,10 +49,17 @@ public class GoogleAuthenticatorService implements VerificationService {
     }
 
     @Override
-    public void allowVerification(Authentication authentication) {
-        //TODO User has access to authenticated endpoints
-        Authentication allowAuthentication = new UsernamePasswordAuthenticationToken(authentication.getName(), null, Collections.singleton(Role.PRE_VERIFICATION));
-        SecurityContextHolder.getContext().setAuthentication(allowAuthentication);
+    public String allowVerification(Authentication authentication) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(new Date().getTime());
+        String token = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("role", Role.PRE_VERIFICATION.getAuthority())
+                .setIssuedAt(new Date(calendar.getTime().getTime()))
+                .setExpiration(new Date(calendar.getTime().getTime() + 10000))
+                .signWith(SignatureAlgorithm.HS512, "!oRE=#QDF13/&Ym")
+                .compact();
+        return token;
     }
 
     @Override
