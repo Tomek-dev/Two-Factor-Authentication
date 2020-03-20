@@ -22,26 +22,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Order(1)
+    private UserDetailsServiceImpl userDetailsService;
+    private VerificationHandler verificationHandler;
+
+    @Autowired
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, VerificationHandler verificationHandler) {
+        this.userDetailsService = userDetailsService;
+        this.verificationHandler = verificationHandler;
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService);
+    }
+
+    @Order(2)
     @Configuration
     class BasicAuthConfiguration extends WebSecurityConfigurerAdapter{
-        private UserDetailsServiceImpl userDetailsService;
-        private VerificationHandler verificationHandler;
-
-        @Autowired
-        public BasicAuthConfiguration(UserDetailsServiceImpl userDetailsService, VerificationHandler verificationHandler) {
-            this.userDetailsService = userDetailsService;
-            this.verificationHandler = verificationHandler;
-        }
-
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(userDetailsService);
-        }
-
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.authorizeRequests()
+            http.antMatcher("/**")
+                    .authorizeRequests()
                     .antMatchers("/resources/**").permitAll()
                     .antMatchers("/public").permitAll()
                     .antMatchers("/secured").hasRole("USER")
@@ -57,13 +58,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
+    @Order(1)
     @Configuration
-    @Order(2)
     class JWTAuthConfiguration extends WebSecurityConfigurerAdapter{
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.authorizeRequests()
+            http
+                    .antMatcher("/verify").authorizeRequests()
                     .antMatchers("/verify").hasRole("PRE_VERIFICATION")
                     .and()
                     .addFilter(new JwtFiler(authenticationManager()));

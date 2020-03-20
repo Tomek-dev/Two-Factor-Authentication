@@ -50,16 +50,15 @@ public class GoogleAuthenticatorService implements VerificationService {
 
     @Override
     public String allowVerification(Authentication authentication) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(new Date().getTime());
+        long currentTime = System.currentTimeMillis();
         String token = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("role", Role.PRE_VERIFICATION.getAuthority())
-                .setIssuedAt(new Date(calendar.getTime().getTime()))
-                .setExpiration(new Date(calendar.getTime().getTime() + 10000))
-                .signWith(SignatureAlgorithm.HS512, "!oRE=#QDF13/&Ym")
+                .setIssuedAt(new Date(currentTime))
+                .setExpiration(new Date(currentTime + 300000))
+                .signWith(SignatureAlgorithm.HS256, "!oRE=#QDF13/&Ym".getBytes())
                 .compact();
-        return token;
+        return "Bearer " + token;
     }
 
     @Override

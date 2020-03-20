@@ -5,6 +5,7 @@ import com.security.twofactorsecurity.model.User;
 import com.security.twofactorsecurity.service.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Optional;
 
 @Component
@@ -40,7 +42,8 @@ public class VerificationHandler implements AuthenticationSuccessHandler {
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if(user.getUsing2FA()){
             String token = verificationService.allowVerification(authentication);
-            httpServletResponse.addHeader("Authorization", token);
+            httpServletResponse.setHeader("Authorization", token);
+            SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
             new DefaultRedirectStrategy().sendRedirect(httpServletRequest, httpServletResponse, VERIFICATION_URL);
         }
         else{
