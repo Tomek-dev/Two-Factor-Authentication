@@ -14,9 +14,11 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Optional;
@@ -24,8 +26,9 @@ import java.util.Optional;
 @Component
 public class VerificationHandler implements AuthenticationSuccessHandler {
 
-    private final String VERIFICATION_URL = "/verify";
-    private final String INDEX_URL = "/";
+    private static final String VERIFICATION_URL = "/verify";
+    private static final String INDEX_URL = "/";
+    private static final String COOKIE_NAME = "Authorization";
 
     private VerificationService verificationService;
     private UserDao userDao;
@@ -41,9 +44,12 @@ public class VerificationHandler implements AuthenticationSuccessHandler {
         Optional<User> userOptional = userDao.findByUsername(authentication.getName());
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if(user.getUsing2FA()){
-            String token = verificationService.allowVerification(authentication);
-            httpServletResponse.setHeader("Authorization", token);
             SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+            String value = Base64.getEncoder().encodeToString(user.getUsername().getBytes());
+            Cookie cookie = new Cookie(COOKIE_NAME, value);
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(5 * 60);
+            httpServletResponse.addCookie(cookie);
             new DefaultRedirectStrategy().sendRedirect(httpServletRequest, httpServletResponse, VERIFICATION_URL);
         }
         else{

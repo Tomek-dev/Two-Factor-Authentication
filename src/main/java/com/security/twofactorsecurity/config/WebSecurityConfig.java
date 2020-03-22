@@ -1,6 +1,6 @@
 package com.security.twofactorsecurity.config;
 
-import com.security.twofactorsecurity.security.JwtFiler;
+import com.security.twofactorsecurity.security.CookieFilter;
 import com.security.twofactorsecurity.service.UserDetailsServiceImpl;
 import com.security.twofactorsecurity.security.VerificationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatcher("/verify").authorizeRequests()
                     .antMatchers("/verify").hasRole("PRE_VERIFICATION")
                     .and()
-                    .addFilter(new JwtFiler(authenticationManager()));
+                    .addFilter(new CookieFilter(authenticationManager()));
         }
     }
 
