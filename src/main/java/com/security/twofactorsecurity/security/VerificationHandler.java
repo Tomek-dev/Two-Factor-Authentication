@@ -28,7 +28,6 @@ public class VerificationHandler implements AuthenticationSuccessHandler {
 
     private static final String VERIFICATION_URL = "/verify";
     private static final String INDEX_URL = "/";
-    private static final String COOKIE_NAME = "Authorization";
 
     private VerificationService verificationService;
     private UserDao userDao;
@@ -44,12 +43,7 @@ public class VerificationHandler implements AuthenticationSuccessHandler {
         Optional<User> userOptional = userDao.findByUsername(authentication.getName());
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if(user.getUsing2FA()){
-            SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
-            String value = Base64.getEncoder().encodeToString(user.getUsername().getBytes());
-            Cookie cookie = new Cookie(COOKIE_NAME, value);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(5 * 60);
-            httpServletResponse.addCookie(cookie);
+            verificationService.allowVerification(authentication);
             new DefaultRedirectStrategy().sendRedirect(httpServletRequest, httpServletResponse, VERIFICATION_URL);
         }
         else{

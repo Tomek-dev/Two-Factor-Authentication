@@ -5,6 +5,6 @@ import org.springframework.security.core.Authentication;
 
 public interface VerificationService {
     boolean verify(Authentication authentication, String phoneCode);
-    String allowVerification(Authentication authentication);
+    void allowVerification(Authentication authentication);
     String generateKey(String username) throws SecretKeyAlreadyExistException;
 }

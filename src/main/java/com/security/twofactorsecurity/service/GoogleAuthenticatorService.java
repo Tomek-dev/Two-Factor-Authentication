@@ -49,16 +49,13 @@ public class GoogleAuthenticatorService implements VerificationService {
     }
 
     @Override
-    public String allowVerification(Authentication authentication) {
-        long currentTime = System.currentTimeMillis();
-        String token = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("role", Role.PRE_VERIFICATION.getAuthority())
-                .setIssuedAt(new Date(currentTime))
-                .setExpiration(new Date(currentTime + 300000))
-                .signWith(SignatureAlgorithm.HS256, "!oRE=#QDF13/&Ym".getBytes())
-                .compact();
-        return "Bearer " + token;
+    public void allowVerification(Authentication authentication) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        authentication.getName(),
+                        null,
+                        Collections.singleton(Role.PRE_VERIFICATION));
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.security.twofactorsecurity.service.GoogleAuthenticatorService;
 import com.security.twofactorsecurity.service.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -25,11 +26,13 @@ public class VerifyController {
     }
 
     @GetMapping("/verify")
+    @PreAuthorize("hasRole('ROLE_PRE_VERIFICATION')")
     public String getVerify(){
         return "verify";
     }
 
     @PostMapping("/verify")
+    @PreAuthorize("hasRole('ROLE_PRE_VERIFICATION')")
     public String verify(@RequestParam String code, Authentication authentication){
         if(verificationService.verify(authentication, code)){
             return "redirect:/";
@@ -39,6 +42,7 @@ public class VerifyController {
 
 
     @GetMapping("/generate")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String generate(Authentication authentication, Model model){
         try {
             String code = verificationService.generateKey(authentication.getName());
