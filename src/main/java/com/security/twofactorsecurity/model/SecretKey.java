@@ -1,8 +1,12 @@
 package com.security.twofactorsecurity.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
 public class SecretKey {
 
     @Id
@@ -14,35 +18,28 @@ public class SecretKey {
     @OneToOne
     private User user;
 
-    public SecretKey() {
+    private SecretKey() {
     }
 
-    public SecretKey(String code, User user) {
-        this.code = code;
-        this.user = user;
-    }
+    public static class Builder{
+        private String code;
+        private User user;
 
-    public Long getId() {
-        return id;
-    }
+        public Builder code(String code){
+            this.code = code;
+            return this;
+        }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+        public Builder user(User user){
+            this.user = user;
+            return this;
+        }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+        public SecretKey build(){
+            SecretKey secretKey = new SecretKey();
+            secretKey.code = this.code;
+            secretKey.user = this.user;
+            return secretKey;
+        }
     }
 }

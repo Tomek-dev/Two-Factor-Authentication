@@ -73,7 +73,10 @@ public class GoogleAuthenticatorServiceTest {
     public void shouldThrowSecretKeyAlreadyExistException(){
         //given
         User user = new User();
-        SecretKey secretKey = new SecretKey("key", user);
+        SecretKey secretKey = new SecretKey.Builder()
+                .code("key")
+                .user(user)
+                .build();
         given(userDao.findByUsername(Mockito.any())).willReturn(java.util.Optional.of(user));
         given(secretKeyDao.findByUser(Mockito.any())).willReturn(java.util.Optional.of(secretKey));
 

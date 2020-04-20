@@ -45,6 +45,10 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>de.taimos</groupId>
 			<artifactId>totp</artifactId>
 			<version>1.0</version>

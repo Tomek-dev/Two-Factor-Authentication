@@ -67,7 +67,10 @@ public class GoogleAuthenticatorService implements VerificationService {
             throw new SecretKeyAlreadyExistException();
         }
         String secret = TOTPCode.generateKey();
-        SecretKey secretKey = new SecretKey(secret, user); //TODO encrypt secretKey in db
+        SecretKey secretKey = new SecretKey.Builder()
+                .code(secret)
+                .user(user)
+                .build();
         secretKeyDao.save(secretKey);
         return secret;
     }

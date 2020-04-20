@@ -1,6 +1,7 @@
 package com.security.twofactorsecurity.security;
 
 import com.security.twofactorsecurity.dao.UserDao;
+import com.security.twofactorsecurity.exceptions.UserNotFoundException;
 import com.security.twofactorsecurity.model.User;
 import com.security.twofactorsecurity.service.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class VerificationHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
         Optional<User> userOptional = userDao.findByUsername(authentication.getName());
-        User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userOptional.orElseThrow(UserNotFoundException::new);
         if(user.getUsing2FA()){
             verificationService.allowVerification(authentication);
             new DefaultRedirectStrategy().sendRedirect(httpServletRequest, httpServletResponse, VERIFICATION_URL);
